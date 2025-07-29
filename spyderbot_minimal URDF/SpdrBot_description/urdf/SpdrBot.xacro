@@ -1,0 +1,364 @@
+<?xml version="1.0" ?>
+<robot name="SpdrBot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:include filename="$(find SpdrBot_description)/urdf/materials.xacro" />
+<xacro:include filename="$(find SpdrBot_description)/urdf/SpdrBot.trans" />
+<xacro:include filename="$(find SpdrBot_description)/urdf/SpdrBot.gazebo" />
+<link name="base_link">
+  <inertial>
+    <origin xyz="4.0195046385725887e-10 -9.5697371012907e-08 -0.005922558162110875" rpy="0 0 0"/>
+    <mass value="2.886187908245162"/>
+    <inertia ixx="0.007306" iyy="0.011523" izz="0.017472" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="arm_a_4_1">
+  <inertial>
+    <origin xyz="-0.029329716066216552 -0.02813594305937389 -0.02511915559887622" rpy="0 0 0"/>
+    <mass value="0.5428876729051186"/>
+    <inertia ixx="0.000279" iyy="0.000264" izz="0.00019" ixy="-3e-05" iyz="-1e-06" ixz="1e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0802 0.0649 -0.0278" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_a_4_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0802 0.0649 -0.0278" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_a_4_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="arm_b_4_1">
+  <inertial>
+    <origin xyz="-0.033307010104674115 0.005023359993758844 0.034641029689620795" rpy="0 0 0"/>
+    <mass value="0.3492283307966938"/>
+    <inertia ixx="0.000242" iyy="0.000242" izz="0.000243" ixy="7.3e-05" iyz="4.5e-05" ixz="4.5e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.096181 0.120196 -0.0137" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_b_4_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.096181 0.120196 -0.0137" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_b_4_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="arm_c_4_1">
+  <inertial>
+    <origin xyz="-0.04092049433517593 0.000606221473381241 -0.0346865874039218" rpy="0 0 0"/>
+    <mass value="0.8577978208262359"/>
+    <inertia ixx="0.001437" iyy="0.001457" izz="0.000621" ixy="-0.000224" iyz="-0.00052" ixz="-0.000499"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.124465 0.14848 -0.082982" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_c_4_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.124465 0.14848 -0.082982" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_c_4_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="arm_a_1_1">
+  <inertial>
+    <origin xyz="0.028135943068837058 -0.0293297160902298 -0.02511915559633373" rpy="0 0 0"/>
+    <mass value="0.5428876729051647"/>
+    <inertia ixx="0.000264" iyy="0.000279" izz="0.00019" ixy="3e-05" iyz="1e-05" ixz="1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.0802 0.0649 -0.0278" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_a_1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.0802 0.0649 -0.0278" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_a_1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="arm_b_1_1">
+  <inertial>
+    <origin xyz="-0.005023356374733862 -0.03330700808569774 0.03464102045551891" rpy="0 0 0"/>
+    <mass value="0.34922835365489313"/>
+    <inertia ixx="0.000242" iyy="0.000242" izz="0.000243" ixy="-7.3e-05" iyz="4.5e-05" ixz="-4.5e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.135496 0.080881 -0.0137" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_b_1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.135496 0.080881 -0.0137" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_b_1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="arm_c_1_1">
+  <inertial>
+    <origin xyz="-0.0006062214733014437 -0.040920494335313015 -0.03468658740391919" rpy="0 0 0"/>
+    <mass value="0.8577978208262385"/>
+    <inertia ixx="0.001457" iyy="0.001437" izz="0.000621" ixy="0.000224" iyz="-0.000499" ixz="0.00052"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.16378 0.109165 -0.082982" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_c_1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.16378 0.109165 -0.082982" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_c_1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="arm_a_2_1">
+  <inertial>
+    <origin xyz="0.02932971764893115 0.028135944651754966 -0.025119158751981622" rpy="0 0 0"/>
+    <mass value="0.5428876729051773"/>
+    <inertia ixx="0.000279" iyy="0.000264" izz="0.00019" ixy="-3e-05" iyz="1e-06" ixz="-1e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.0802 -0.0649 -0.0278" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_a_2_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.0802 -0.0649 -0.0278" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_a_2_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="arm_b_2_1">
+  <inertial>
+    <origin xyz="0.033306991137202493 -0.005023373318229579 0.034641011840133185" rpy="0 0 0"/>
+    <mass value="0.3492283536549301"/>
+    <inertia ixx="0.000242" iyy="0.000242" izz="0.000243" ixy="7.3e-05" iyz="-4.5e-05" ixz="-4.5e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.096181 -0.120196 -0.0137" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_b_2_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.096181 -0.120196 -0.0137" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_b_2_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="arm_c_2_1">
+  <inertial>
+    <origin xyz="0.04092049563456594 -0.0006062201740217599 -0.034686586023032526" rpy="0 0 0"/>
+    <mass value="0.8577978208264597"/>
+    <inertia ixx="0.001437" iyy="0.001457" izz="0.000621" ixy="-0.000224" iyz="0.00052" ixz="0.000499"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.124465 -0.14848 -0.082982" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_c_2_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.124465 -0.14848 -0.082982" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_c_2_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="arm_a_3_1">
+  <inertial>
+    <origin xyz="-0.0281359446247115 0.029329717652243237 -0.025119158739025944" rpy="0 0 0"/>
+    <mass value="0.5428876729051227"/>
+    <inertia ixx="0.000264" iyy="0.000279" izz="0.00019" ixy="3e-05" iyz="-1e-05" ixz="-1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0802 -0.0649 -0.0278" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_a_3_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0802 -0.0649 -0.0278" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_a_3_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="arm_b_3_1">
+  <inertial>
+    <origin xyz="0.0050233755625489485 0.033306994569915815 0.0346410025469837" rpy="0 0 0"/>
+    <mass value="0.34922833079669513"/>
+    <inertia ixx="0.000242" iyy="0.000242" izz="0.000243" ixy="-7.3e-05" iyz="-4.5e-05" ixz="4.5e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.135496 -0.080881 -0.0137" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_b_3_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.135496 -0.080881 -0.0137" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_b_3_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="arm_c_3_1">
+  <inertial>
+    <origin xyz="0.0006062201741630358 0.04092049563447801 -0.034686586023029604" rpy="0 0 0"/>
+    <mass value="0.8577978208264664"/>
+    <inertia ixx="0.001457" iyy="0.001437" izz="0.000621" ixy="0.000224" iyz="0.000499" ixz="-0.00052"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.16378 -0.109165 -0.082982" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_c_3_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.16378 -0.109165 -0.082982" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://SpdrBot_description/meshes/arm_c_3_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<joint name="Revolute 110" type="continuous">
+  <origin xyz="-0.0802 -0.0649 0.0278" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="arm_a_4_1"/>
+  <axis xyz="0.0 -0.0 1.0"/>
+</joint>
+
+<joint name="Revolute 111" type="continuous">
+  <origin xyz="-0.015981 -0.055296 -0.0141" rpy="0 0 0"/>
+  <parent link="arm_a_4_1"/>
+  <child link="arm_b_4_1"/>
+  <axis xyz="0.707107 -0.707107 0.0"/>
+</joint>
+
+<joint name="Revolute 112" type="continuous">
+  <origin xyz="-0.028284 -0.028284 0.069282" rpy="0 0 0"/>
+  <parent link="arm_b_4_1"/>
+  <child link="arm_c_4_1"/>
+  <axis xyz="-0.707107 0.707107 -0.0"/>
+</joint>
+
+<joint name="Revolute 113" type="continuous">
+  <origin xyz="0.0802 -0.0649 0.0278" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="arm_a_1_1"/>
+  <axis xyz="0.0 -0.0 1.0"/>
+</joint>
+
+<joint name="Revolute 114" type="continuous">
+  <origin xyz="0.055296 -0.015981 -0.0141" rpy="0 0 0"/>
+  <parent link="arm_a_1_1"/>
+  <child link="arm_b_1_1"/>
+  <axis xyz="0.707107 0.707107 0.0"/>
+</joint>
+
+<joint name="Revolute 115" type="continuous">
+  <origin xyz="0.028284 -0.028284 0.069282" rpy="0 0 0"/>
+  <parent link="arm_b_1_1"/>
+  <child link="arm_c_1_1"/>
+  <axis xyz="-0.707107 -0.707107 -0.0"/>
+</joint>
+
+<joint name="Revolute 116" type="continuous">
+  <origin xyz="0.0802 0.0649 0.0278" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="arm_a_2_1"/>
+  <axis xyz="-0.0 0.0 1.0"/>
+</joint>
+
+<joint name="Revolute 117" type="continuous">
+  <origin xyz="0.015981 0.055296 -0.0141" rpy="0 0 0"/>
+  <parent link="arm_a_2_1"/>
+  <child link="arm_b_2_1"/>
+  <axis xyz="-0.707107 0.707107 -0.0"/>
+</joint>
+
+<joint name="Revolute 118" type="continuous">
+  <origin xyz="0.028284 0.028284 0.069282" rpy="0 0 0"/>
+  <parent link="arm_b_2_1"/>
+  <child link="arm_c_2_1"/>
+  <axis xyz="0.707107 -0.707107 -0.0"/>
+</joint>
+
+<joint name="Revolute 119" type="continuous">
+  <origin xyz="-0.0802 0.0649 0.0278" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="arm_a_3_1"/>
+  <axis xyz="-0.0 0.0 1.0"/>
+</joint>
+
+<joint name="Revolute 120" type="continuous">
+  <origin xyz="-0.055296 0.015981 -0.0141" rpy="0 0 0"/>
+  <parent link="arm_a_3_1"/>
+  <child link="arm_b_3_1"/>
+  <axis xyz="-0.707107 -0.707107 0.0"/>
+</joint>
+
+<joint name="Revolute 121" type="continuous">
+  <origin xyz="-0.028284 0.028284 0.069282" rpy="0 0 0"/>
+  <parent link="arm_b_3_1"/>
+  <child link="arm_c_3_1"/>
+  <axis xyz="0.707107 0.707107 -0.0"/>
+</joint>
+
+</robot>

@@ -1,0 +1,9 @@
+<launch>
+
+<rosparam file="$(find SpdrBot_description)/launch/controller.yaml" command="load"/>
+<node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="SpdrBot" args="Revolute 110_position_controller Revolute 111_position_controller Revolute 112_position_controller Revolute 113_position_controller Revolute 114_position_controller Revolute 115_position_controller Revolute 116_position_controller Revolute 117_position_controller Revolute 118_position_controller Revolute 119_position_controller Revolute 120_position_controller Revolute 121_position_controller joint_state_controller "/>
+<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
+  <remap from="/joint_states" to="/SpdrBot/joint_states"/>
+</node>
+
+</launch>
