@@ -1,0 +1,68 @@
+seed: 42
+models:
+  separate: false
+  policy:
+    class: GaussianMixin
+    clip_actions: false
+    clip_log_std: true
+    min_log_std: -20.0
+    max_log_std: 2.0
+    initial_log_std: 0.0
+    network:
+    - name: net
+      input: STATES
+      layers:
+      - 64
+      - 64
+      activations: elu
+    output: ACTIONS
+  value:
+    class: DeterministicMixin
+    clip_actions: false
+    network:
+    - name: net
+      input: STATES
+      layers:
+      - 64
+      - 64
+      activations: elu
+    output: ONE
+memory:
+  class: RandomMemory
+  memory_size: -1
+agent:
+  class: PPO
+  rollouts: 32
+  learning_epochs: 8
+  mini_batches: 8
+  discount_factor: 0.99
+  lambda: 0.95
+  learning_rate: 0.0005
+  learning_rate_scheduler: KLAdaptiveLR
+  learning_rate_scheduler_kwargs:
+    kl_threshold: 0.008
+  state_preprocessor: RunningStandardScaler
+  state_preprocessor_kwargs: null
+  value_preprocessor: RunningStandardScaler
+  value_preprocessor_kwargs: null
+  random_timesteps: 0
+  learning_starts: 0
+  grad_norm_clip: 1.0
+  ratio_clip: 0.2
+  value_clip: 0.2
+  clip_predicted_values: true
+  entropy_loss_scale: 0.0
+  value_loss_scale: 2.0
+  kl_threshold: 0.0
+  rewards_shaper_scale: 0.1
+  time_limit_bootstrap: false
+  experiment:
+    directory: C:\spdrbot3\spdrbot3\logs\skrl\cartpole_direct
+    experiment_name: 2025-07-16_23-30-21_ppo_torch
+    write_interval: auto
+    checkpoint_interval: auto
+trainer:
+  class: SequentialTrainer
+  timesteps: 20000
+  environment_info: log
+  close_environment_at_exit: false

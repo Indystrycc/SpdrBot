@@ -1,0 +1,534 @@
+--- git status ---
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/__init__.py
+	modified:   source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/agents/rsl_rl_ppo_cfg.py
+	modified:   source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/agents/skrl_ppo_cfg.yaml
+	modified:   source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/spdrbot3_env.py
+	modified:   source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/spdrbot3_env_cfg.py
+
+no changes added to commit (use "git add" and/or "git commit -a") 
+
+
+--- git diff ---
+diff --git a/source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/__init__.py b/source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/__init__.py
+index 44bdf1e..864f3ca 100644
+--- a/source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/__init__.py
++++ b/source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/__init__.py
+@@ -1,4 +1,5 @@
+-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
++# source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/__init__.py
++# Copyright (c) 2022-2025, The Isaac Lab Project Developers[](https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+ # All rights reserved.
+ #
+ # SPDX-License-Identifier: BSD-3-Clause
+diff --git a/source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/agents/rsl_rl_ppo_cfg.py b/source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/agents/rsl_rl_ppo_cfg.py
+index b7e7cc9..0a10c17 100644
+--- a/source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/agents/rsl_rl_ppo_cfg.py
++++ b/source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/agents/rsl_rl_ppo_cfg.py
+@@ -10,25 +10,25 @@ from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlPpoActorCriticCfg, R
+ 
+ @configclass
+ class PPORunnerCfg(RslRlOnPolicyRunnerCfg):
+-    num_steps_per_env = 16
+-    max_iterations = 150
++    num_steps_per_env = 24
++    max_iterations = 1000
+     save_interval = 50
+     experiment_name = "cartpole_direct"
+     empirical_normalization = False
+     policy = RslRlPpoActorCriticCfg(
+         init_noise_std=1.0,
+-        actor_hidden_dims=[32, 32],
+-        critic_hidden_dims=[32, 32],
++        actor_hidden_dims=[64, 64],
++        critic_hidden_dims=[64, 64],
+         activation="elu",
+     )
+     algorithm = RslRlPpoAlgorithmCfg(
+-        value_loss_coef=1.0,
++        value_loss_coef=2.0,
+         use_clipped_value_loss=True,
+         clip_param=0.2,
+         entropy_coef=0.005,
+         num_learning_epochs=5,
+         num_mini_batches=4,
+-        learning_rate=1.0e-3,
++        learning_rate=1.0e-4,
+         schedule="adaptive",
+         gamma=0.99,
+         lam=0.95,
+diff --git a/source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/agents/skrl_ppo_cfg.yaml b/source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/agents/skrl_ppo_cfg.yaml
+index 02c62c2..91d7670 100644
+--- a/source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/agents/skrl_ppo_cfg.yaml
++++ b/source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/agents/skrl_ppo_cfg.yaml
+@@ -15,7 +15,7 @@ models:
+     network:
+       - name: net
+         input: STATES
+-        layers: [32, 32]
++        layers: [64, 64]
+         activations: elu
+     output: ACTIONS
+   value:  # see deterministic_model parameters
+@@ -24,7 +24,7 @@ models:
+     network:
+       - name: net
+         input: STATES
+-        layers: [32, 32]
++        layers: [64, 64]
+         activations: elu
+     output: ONE
+ 
+@@ -60,7 +60,7 @@ agent:
+   value_clip: 0.2
+   clip_predicted_values: True
+   entropy_loss_scale: 0.0
+-  value_loss_scale: 2.0
++  value_loss_scale: 1.0
+   kl_threshold: 0.0
+   rewards_shaper_scale: 0.1
+   time_limit_bootstrap: False
+@@ -76,5 +76,5 @@ agent:
+ # https://skrl.readthedocs.io/en/latest/api/trainers/sequential.html
+ trainer:
+   class: SequentialTrainer
+-  timesteps: 4800
++  timesteps: 5000
+   environment_info: log
+\ No newline at end of file
+diff --git a/source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/spdrbot3_env.py b/source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/spdrbot3_env.py
+index b50c7a5..a62cd6a 100644
+--- a/source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/spdrbot3_env.py
++++ b/source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/spdrbot3_env.py
+@@ -1,20 +1,12 @@
+-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
++# spdrbot3_env.py
+ from __future__ import annotations
+-
+-import math
++import gymnasium as gym
+ import torch
+-from collections.abc import Sequence
+-
+ import isaaclab.sim as sim_utils
+ from isaaclab.assets import Articulation
+ from isaaclab.envs import DirectRLEnv
+-from isaaclab.sim.spawners.from_files import GroundPlaneCfg, spawn_ground_plane
+-from isaaclab.utils.math import sample_uniform
+-
++from isaaclab.sensors import ContactSensor
++from isaaclab.utils.math import quat_rotate
+ from .spdrbot3_env_cfg import Spdrbot3EnvCfg
+ 
+ 
+@@ -24,112 +16,188 @@ class Spdrbot3Env(DirectRLEnv):
+     def __init__(self, cfg: Spdrbot3EnvCfg, render_mode: str | None = None, **kwargs):
+         super().__init__(cfg, render_mode, **kwargs)
+ 
+-        self._cart_dof_idx, _ = self.robot.find_joints(self.cfg.cart_dof_name)
+-        self._pole_dof_idx, _ = self.robot.find_joints(self.cfg.pole_dof_name)
++        # Joint position command (deviation from default joint positions)
++        self._actions = torch.zeros(self.num_envs, gym.spaces.flatdim(self.single_action_space), device=self.device)
++        self._previous_actions = torch.zeros(
++            self.num_envs, gym.spaces.flatdim(self.single_action_space), device=self.device
++        )
+ 
+-        self.joint_pos = self.robot.data.joint_pos
+-        self.joint_vel = self.robot.data.joint_vel
++        # X/Y linear velocity commands (no yaw)
++        self._commands = torch.zeros(self.num_envs, 2, device=self.device)
++        self._sim_time = torch.zeros(self.num_envs, device=self.device)
++
++        # Get specific body indices
++        self._base_id, _ = self._contact_sensor.find_bodies("base_link")
++        self._feet_ids, _ = self._contact_sensor.find_bodies(["arm_c_1_1", "arm_c_2_1", "arm_c_3_1", "arm_c_4_1"])
++        self._die_body_ids, _ = self._contact_sensor.find_bodies(["arm_a_1_1", "arm_a_2_1", "arm_a_3_1", "arm_a_4_1"])
++
++        # Logging
++        self._episode_sums = {
++            key: torch.zeros(self.num_envs, dtype=torch.float, device=self.device)
++            for key in [
++                "track_lin_vel_xy",
++                "track_ang_vel_z_exp",
++                "lin_vel_z_l2",
++                "ang_vel_xy_l2",
++                "joint_vel_l2",
++                "dof_torques_l2",
++                "dof_acc_l2",
++                "action_rate_l2",
++                "flat_orientation_l2",
++                "power_penalty",
++                "three_legs_contact",
++            ]
++        }
+ 
+     def _setup_scene(self):
+-        self.robot = Articulation(self.cfg.robot_cfg)
+-        # add ground plane
+-        spawn_ground_plane(prim_path="/World/ground", cfg=GroundPlaneCfg())
+-        # clone and replicate
++        self._robot = Articulation(self.cfg.robot)
++        self.scene.articulations["robot"] = self._robot
++        self._contact_sensor = ContactSensor(self.cfg.contact_sensor)
++        self.scene.sensors["contact_sensor"] = self._contact_sensor
++        self.cfg.terrain.num_envs = self.scene.cfg.num_envs
++        self.cfg.terrain.env_spacing = self.scene.cfg.env_spacing
++        self._terrain = self.cfg.terrain.class_type(self.cfg.terrain)
+         self.scene.clone_environments(copy_from_source=False)
+         # we need to explicitly filter collisions for CPU simulation
+         if self.device == "cpu":
+-            self.scene.filter_collisions(global_prim_paths=[])
+-        # add articulation to scene
+-        self.scene.articulations["robot"] = self.robot
++            self.scene.filter_collisions(global_prim_paths=[self.cfg.terrain.prim_path])
+         # add lights
+         light_cfg = sim_utils.DomeLightCfg(intensity=2000.0, color=(0.75, 0.75, 0.75))
+         light_cfg.func("/World/Light", light_cfg)
+ 
+-    def _pre_physics_step(self, actions: torch.Tensor) -> None:
+-        self.actions = actions.clone()
++    def _pre_physics_step(self, actions: torch.Tensor):
++        self._actions = actions.clone()
++        self._processed_actions = self.cfg.action_scale * self._actions + self._robot.data.default_joint_pos
+ 
+-    def _apply_action(self) -> None:
+-        self.robot.set_joint_effort_target(self.actions * self.cfg.action_scale, joint_ids=self._cart_dof_idx)
++    def _apply_action(self):
++        self._robot.set_joint_position_target(self._processed_actions)
+ 
+     def _get_observations(self) -> dict:
++        self._previous_actions = self._actions.clone()
++
++        lin_vel_b = self._robot.data.root_lin_vel_b
++        ang_vel_b = self._robot.data.root_ang_vel_b
++        gravity_b = self._robot.data.projected_gravity_b
++        commands_3 = torch.cat((self._commands, torch.zeros(self.num_envs, 1, device=self.device)), dim=1)
++        joint_pos_rel = self._robot.data.joint_pos - self._robot.data.default_joint_pos
++        joint_vel = self._robot.data.joint_vel
++        prev_action = self._previous_actions
++        phase = 2 * torch.pi * (self._sim_time % self.cfg.phase_period) / self.cfg.phase_period
++        sin_phase = torch.sin(phase).unsqueeze(-1)
++        cos_phase = torch.cos(phase).unsqueeze(-1)
++
+         obs = torch.cat(
+-            (
+-                self.joint_pos[:, self._pole_dof_idx[0]].unsqueeze(dim=1),
+-                self.joint_vel[:, self._pole_dof_idx[0]].unsqueeze(dim=1),
+-                self.joint_pos[:, self._cart_dof_idx[0]].unsqueeze(dim=1),
+-                self.joint_vel[:, self._cart_dof_idx[0]].unsqueeze(dim=1),
+-            ),
++            [
++                # lin_vel_b,
++                # ang_vel_b,
++                # gravity_b,
++                commands_3,
++                # joint_pos_rel,
++                # joint_vel,
++                prev_action,
++                sin_phase,
++                cos_phase,
++            ],
+             dim=-1,
+         )
+         observations = {"policy": obs}
+         return observations
+ 
+     def _get_rewards(self) -> torch.Tensor:
+-        total_reward = compute_rewards(
+-            self.cfg.rew_scale_alive,
+-            self.cfg.rew_scale_terminated,
+-            self.cfg.rew_scale_pole_pos,
+-            self.cfg.rew_scale_cart_vel,
+-            self.cfg.rew_scale_pole_vel,
+-            self.joint_pos[:, self._pole_dof_idx[0]],
+-            self.joint_vel[:, self._pole_dof_idx[0]],
+-            self.joint_pos[:, self._cart_dof_idx[0]],
+-            self.joint_vel[:, self._cart_dof_idx[0]],
+-            self.reset_terminated,
+-        )
+-        return total_reward
++        # linear velocity tracking (only x/y) - reward dot product for traveled distance approximation
++        lin_vel_dot = torch.sum(self._commands * self._robot.data.root_lin_vel_b[:, :2], dim=1)
++        # yaw rate tracking (penalize deviation from 0)
++        yaw_command = torch.zeros(self.num_envs, device=self.device)
++        yaw_rate_error = torch.square(yaw_command - self._robot.data.root_ang_vel_b[:, 2])
++        yaw_rate_error_mapped = torch.exp(-yaw_rate_error / 0.25)
++        # z velocity tracking
++        z_vel_error = torch.square(self._robot.data.root_lin_vel_b[:, 2])
++        # angular velocity x/y
++        ang_vel_error = torch.sum(torch.square(self._robot.data.root_ang_vel_b[:, :2]), dim=1)
++        # joint velocities
++        joint_vel_error = torch.sum(torch.square(self._robot.data.joint_vel), dim=1)
++        # joint torques
++        joint_torques = torch.sum(torch.square(self._robot.data.applied_torque), dim=1)
++        # joint acceleration
++        joint_accel = torch.sum(torch.square(self._robot.data.joint_acc), dim=1)
++        # action rate
++        action_rate = torch.sum(torch.square(self._actions - self._previous_actions), dim=1)
++        # flat orientation
++        flat_orientation = torch.sum(torch.square(self._robot.data.projected_gravity_b[:, :2]), dim=1)
++        joint_power = torch.sum(torch.abs(self._robot.data.applied_torque * self._robot.data.joint_vel), dim=1)
++        # three legs contact
++        net_forces = self._contact_sensor.data.net_forces_w  # [num_envs, num_bodies, 3]
++        feet_contact_forces = torch.norm(net_forces[:, self._feet_ids, :], dim=-1)  # [num_envs, 4]
++        in_contact = (feet_contact_forces > 1.0).float()
++        num_contacts = torch.sum(in_contact, dim=1)
++        three_legs = (num_contacts >= 3).float()
++
++        rewards = {
++            "track_lin_vel_xy": lin_vel_dot * self.cfg.lin_vel_reward_scale * self.step_dt,
++            "track_ang_vel_z_exp": yaw_rate_error_mapped * self.cfg.yaw_rate_reward_scale * self.step_dt,
++            "lin_vel_z_l2": z_vel_error * self.cfg.z_vel_reward_scale * self.step_dt,
++            "ang_vel_xy_l2": ang_vel_error * self.cfg.ang_vel_reward_scale * self.step_dt,
++            "joint_vel_l2": joint_vel_error * self.cfg.joint_vel_penalty_scale * self.step_dt,
++            "dof_torques_l2": joint_torques * self.cfg.joint_torque_reward_scale * self.step_dt,
++            "dof_acc_l2": joint_accel * self.cfg.joint_accel_reward_scale * self.step_dt,
++            "action_rate_l2": action_rate * self.cfg.action_rate_reward_scale * self.step_dt,
++            "flat_orientation_l2": flat_orientation * self.cfg.flat_orientation_reward_scale * self.step_dt,
++            "power_penalty": joint_power * self.cfg.power_penalty_scale * self.step_dt,
++            "three_legs_contact": three_legs * self.cfg.three_legs_contact_reward_scale * self.step_dt,
++        }
++        reward = torch.sum(torch.stack(list(rewards.values())), dim=0)
++        # Logging
++        for key, value in rewards.items():
++            self._episode_sums[key] += value
++        return reward
+ 
+     def _get_dones(self) -> tuple[torch.Tensor, torch.Tensor]:
+-        self.joint_pos = self.robot.data.joint_pos
+-        self.joint_vel = self.robot.data.joint_vel
+-
+         time_out = self.episode_length_buf >= self.max_episode_length - 1
+-        out_of_bounds = torch.any(torch.abs(self.joint_pos[:, self._cart_dof_idx]) > self.cfg.max_cart_pos, dim=1)
+-        out_of_bounds = out_of_bounds | torch.any(torch.abs(self.joint_pos[:, self._pole_dof_idx]) > math.pi / 2, dim=1)
+-        return out_of_bounds, time_out
++        net_contact_forces = self._contact_sensor.data.net_forces_w_history
++        died = torch.any(
++            torch.max(torch.norm(net_contact_forces[:, :, self._die_body_ids], dim=-1), dim=1)[0] > 1.0, dim=1
++        )
++        return died, time_out
+ 
+-    def _reset_idx(self, env_ids: Sequence[int] | None):
+-        if env_ids is None:
+-            env_ids = self.robot._ALL_INDICES
++    def _reset_idx(self, env_ids: torch.Tensor | None):
++        if env_ids is None or len(env_ids) == self.num_envs:
++            env_ids = self._robot._ALL_INDICES
++        self._robot.reset(env_ids)
+         super()._reset_idx(env_ids)
+-
+-        joint_pos = self.robot.data.default_joint_pos[env_ids]
+-        joint_pos[:, self._pole_dof_idx] += sample_uniform(
+-            self.cfg.initial_pole_angle_range[0] * math.pi,
+-            self.cfg.initial_pole_angle_range[1] * math.pi,
+-            joint_pos[:, self._pole_dof_idx].shape,
+-            joint_pos.device,
+-        )
+-        joint_vel = self.robot.data.default_joint_vel[env_ids]
+-
+-        default_root_state = self.robot.data.default_root_state[env_ids]
+-        default_root_state[:, :3] += self.scene.env_origins[env_ids]
+-
+-        self.joint_pos[env_ids] = joint_pos
+-        self.joint_vel[env_ids] = joint_vel
+-
+-        self.robot.write_root_pose_to_sim(default_root_state[:, :7], env_ids)
+-        self.robot.write_root_velocity_to_sim(default_root_state[:, 7:], env_ids)
+-        self.robot.write_joint_state_to_sim(joint_pos, joint_vel, None, env_ids)
+-
+-
+-@torch.jit.script
+-def compute_rewards(
+-    rew_scale_alive: float,
+-    rew_scale_terminated: float,
+-    rew_scale_pole_pos: float,
+-    rew_scale_cart_vel: float,
+-    rew_scale_pole_vel: float,
+-    pole_pos: torch.Tensor,
+-    pole_vel: torch.Tensor,
+-    cart_pos: torch.Tensor,
+-    cart_vel: torch.Tensor,
+-    reset_terminated: torch.Tensor,
+-):
+-    rew_alive = rew_scale_alive * (1.0 - reset_terminated.float())
+-    rew_termination = rew_scale_terminated * reset_terminated.float()
+-    rew_pole_pos = rew_scale_pole_pos * torch.sum(torch.square(pole_pos).unsqueeze(dim=1), dim=-1)
+-    rew_cart_vel = rew_scale_cart_vel * torch.sum(torch.abs(cart_vel).unsqueeze(dim=1), dim=-1)
+-    rew_pole_vel = rew_scale_pole_vel * torch.sum(torch.abs(pole_vel).unsqueeze(dim=1), dim=-1)
+-    total_reward = rew_alive + rew_termination + rew_pole_pos + rew_cart_vel + rew_pole_vel
+-    return total_reward
+\ No newline at end of file
++        if len(env_ids) == self.num_envs:
++            # Spread out the resets to avoid spikes in training when many environments reset at a similar time
++            self.episode_length_buf[:] = torch.randint_like(self.episode_length_buf, high=int(self.max_episode_length))
++        self._actions[env_ids] = 0.0
++        self._previous_actions[env_ids] = 0.0
++        # Sample new commands (only x/y)
++        self._commands[env_ids] = torch.zeros_like(self._commands[env_ids]).uniform_(-1.0, 1.0)
++
++        self._sim_time[env_ids] = torch.rand(len(env_ids), device=self.device) * self.cfg.phase_period
++        # Reset robot state
++        joint_pos = self._robot.data.default_joint_pos[env_ids]
++        # randomize joint positions by adding a number in [-0.6, 0.6] uniformly
++        joint_pos += torch.rand_like(joint_pos) * 1.2 - 0.6
++        joint_vel = self._robot.data.default_joint_vel[env_ids]
++        default_root_state = self._robot.data.default_root_state[env_ids]
++        default_root_state[:, :3] += self._terrain.env_origins[env_ids]
++        self._robot.write_root_pose_to_sim(default_root_state[:, :7], env_ids)
++        self._robot.write_root_velocity_to_sim(default_root_state[:, 7:], env_ids)
++        self._robot.write_joint_state_to_sim(joint_pos, joint_vel, None, env_ids)
++        
++        # Logging
++        extras = dict()
++        for key in self._episode_sums.keys():
++            episodic_sum_avg = torch.mean(self._episode_sums[key][env_ids])
++            extras["Episode_Reward/" + key] = episodic_sum_avg / self.max_episode_length_s
++            self._episode_sums[key][env_ids] = 0.0
++        self.extras["log"] = dict()
++        self.extras["log"].update(extras)
++        extras = dict()
++        extras["Episode_Termination/leg_contact"] = torch.count_nonzero(self.reset_terminated[env_ids]).item()
++        extras["Episode_Termination/time_out"] = torch.count_nonzero(self.reset_time_outs[env_ids]).item()
++        self.extras["log"].update(extras)
++
++    def step(self, actions: torch.Tensor):
++        observations, rewards, terminated, truncated, extras = super().step(actions)
++        self._sim_time += self.step_dt
++        return observations, rewards, terminated, truncated, extras
+\ No newline at end of file
+diff --git a/source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/spdrbot3_env_cfg.py b/source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/spdrbot3_env_cfg.py
+index fd2dad3..8dbede1 100644
+--- a/source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/spdrbot3_env_cfg.py
++++ b/source/spdrbot3/spdrbot3/tasks/direct/spdrbot3/spdrbot3_env_cfg.py
+@@ -1,48 +1,90 @@
+-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-from isaaclab_assets.robots.cartpole import CARTPOLE_CFG
+-
++# spdrbot3_env_cfg.py
++import isaaclab.envs.mdp as mdp
++import isaaclab.sim as sim_utils
+ from isaaclab.assets import ArticulationCfg
+ from isaaclab.envs import DirectRLEnvCfg
++from isaaclab.managers import EventTermCfg as EventTerm
++from isaaclab.managers import SceneEntityCfg
+ from isaaclab.scene import InteractiveSceneCfg
+ from isaaclab.sim import SimulationCfg
++from isaaclab.terrains import TerrainImporterCfg
+ from isaaclab.utils import configclass
++from isaaclab.sensors import ContactSensorCfg
++from isaaclab.managers import EventTermCfg as EventTerm
++from isaaclab_assets.robots.spdrbot import SPDRBOT_CFG  # isort: skip
+ 
+ 
+ @configclass
+ class Spdrbot3EnvCfg(DirectRLEnvCfg):
+     # env
+-    decimation = 2
+-    episode_length_s = 5.0
+-    # - spaces definition
+-    action_space = 1
+-    observation_space = 4
++    episode_length_s = 40.0
++    decimation = 8
++    action_scale = 1
++    action_space = 12
++    observation_space = 17
+     state_space = 0
++    phase_period = 5.0
++
++    debug_vis: bool = False
+ 
+     # simulation
+-    sim: SimulationCfg = SimulationCfg(dt=1 / 120, render_interval=decimation)
++    sim: SimulationCfg = SimulationCfg(
++        dt=1 / 50,
++        render_interval=1,
++        physics_material=sim_utils.RigidBodyMaterialCfg(
++            friction_combine_mode="multiply",
++            restitution_combine_mode="multiply",
++            static_friction=1.0,
++            dynamic_friction=1.0,
++            restitution=0.0,
++        ),
++    )
++    terrain = TerrainImporterCfg(
++        prim_path="/World/ground",
++        terrain_type="plane",
++        collision_group=-1,
++        physics_material=sim_utils.RigidBodyMaterialCfg(
++            friction_combine_mode="multiply",
++            restitution_combine_mode="multiply",
++            static_friction=1.0,
++            dynamic_friction=1.0,
++            restitution=0.0,
++        ),
++        debug_vis=False,
++    )
+ 
+-    # robot(s)
+-    robot_cfg: ArticulationCfg = CARTPOLE_CFG.replace(prim_path="/World/envs/env_.*/Robot")
++    contact_sensor: ContactSensorCfg = ContactSensorCfg(
++        prim_path="/World/envs/env_.*/Robot/.*",  # Monitor all bodies
++        history_length=5,
++        update_period=0.02,  # Matches sim dt = 1/200
++        track_air_time=True,  # Enable for feet air time
++    )
++
++    add_base_mass = EventTerm(
++        func=mdp.randomize_rigid_body_mass,
++        mode="startup",
++        params={
++            "asset_cfg": SceneEntityCfg("robot", body_names=["arm_c_1_1", "arm_c_2_1", "arm_c_3_1", "arm_c_4_1", "arm_c_1_1", "arm_c_2_1", "arm_c_3_1", "arm_c_4_1"]),
++            "mass_distribution_params": (0.1, 0.1),
++            "operation": "add",
++        },
++    )
+ 
+     # scene
+-    scene: InteractiveSceneCfg = InteractiveSceneCfg(num_envs=4096, env_spacing=4.0, replicate_physics=True)
+-
+-    # custom parameters/scales
+-    # - controllable joint
+-    cart_dof_name = "slider_to_cart"
+-    pole_dof_name = "cart_to_pole"
+-    # - action scale
+-    action_scale = 100.0  # [N]
+-    # - reward scales
+-    rew_scale_alive = 1.0
+-    rew_scale_terminated = -2.0
+-    rew_scale_pole_pos = -1.0
+-    rew_scale_cart_vel = -0.01
+-    rew_scale_pole_vel = -0.005
+-    # - reset states/conditions
+-    initial_pole_angle_range = [-0.25, 0.25]  # pole angle sample range on reset [rad]
+-    max_cart_pos = 3.0  # reset if cart exceeds this position [m]
+\ No newline at end of file
++    scene: InteractiveSceneCfg = InteractiveSceneCfg(num_envs=20000, env_spacing=1.0, replicate_physics=True)
++
++    # robot
++    robot: ArticulationCfg = SPDRBOT_CFG.replace(prim_path="/World/envs/env_.*/Robot")
++
++    # reward scales
++    lin_vel_reward_scale = 30
++    yaw_rate_reward_scale = 0.5
++    z_vel_reward_scale = -3.0
++    ang_vel_reward_scale = -0.05
++    joint_vel_penalty_scale = -0.01
++    joint_torque_reward_scale = -1e-5
++    joint_accel_reward_scale = -1e-6
++    action_rate_reward_scale = -0.03
++    flat_orientation_reward_scale = -7.0
++    power_penalty_scale = -1e-3
++    three_legs_contact_reward_scale = 0.1
+\ No newline at end of file
