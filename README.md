@@ -22,8 +22,7 @@
 
 ## 🎥 Video Demo
 
-> _Paste the link to your YouTube video here_  
-> (e.g. [Watch the full build + simulation breakdown](https://youtu.be/your-video-id))
+[![Watch the demo on YouTube](https://img.youtube.com/vi/YDzHL2JSCHc/maxresdefault.jpg)](https://www.youtube.com/watch?v=YDzHL2JSCHc)
 
 ---
 
@@ -31,7 +30,7 @@
 
 Want to go beyond simulation and build the physical robot?  
 You can get all the 3D-printable files, Fusion 360 design, and bonus resources here:  
-👉 **[Download SPDR Bot on indystry.cc](https://indystry.cc/store)**
+👉 **[Download SPDR Bot on indystry.cc](https://indystry.cc/product/3d-printable-4-legged-spider-robot/)**
 
 ---
 
